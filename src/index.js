@@ -9,6 +9,7 @@ class Character {
     this._offensePower = props.offensePower
     this._defencePower = props.defencePower
   }
+
   showStatus() {
     /* 
       キャラクターの名前、_hp、MPを表示する。
@@ -27,16 +28,18 @@ class Character {
       死んでいない場合は相手に与えたダメージを表示。
       相手が死んだ場合は相手に与えたダメージと死んだことを表示する。 
     */
-    const damage = this.calcAttackDamage(defender);
+    
     mainEl.innerHTML += `
         <p>============================</p>
     `
-    if( this._hp <= 0 ){
+    if (this._hp <= 0) {
       mainEl.innerHTML += `
         <p>${this._name}は_hp0以下のため攻撃できません</p>
       `
-    } 
-    if( defender._hp <= 0 ){
+      return
+    }
+    const damage = this.calcAttackDamage(defender);
+    if (defender._hp <= 0) {
       mainEl.innerHTML += `
         <p>${this._name}が${defender._name}に攻撃！</p>
         <p>${defender._name}は既に死んでいます</p>
@@ -47,7 +50,7 @@ class Character {
         <p>${this._name}が${defender._name}に攻撃！</p>
         <p>${defender._name}に${damage}のダメージ</p>
       `
-      if( defender._hp <= 0 ){
+      if (defender._hp <= 0) {
         mainEl.innerHTML += `
           <p>${defender._name}は死にました</p>
         `
@@ -65,7 +68,7 @@ class Character {
       ダメージが0未満の場合は、最低のダメージ1を与える。
     */
     let damage =  this._offensePower - defender._defencePower;
-    if (damage < 0) {
+    if (damage <= 0) {
       damage = 1;
     }
     return damage
@@ -124,6 +127,35 @@ class Sorcerer extends Character {
       相手が死んでいる場合は攻撃が出来ないためその旨を表示する。
       MPが足りない場合はその旨を表示する。
     */
+    mainEl.innerHTML += `
+      <p>============================</p>
+    `
+    if (this._hp <= 0) {
+      mainEl.innerHTML += `
+        <p>${this.name}は死んでいます</p>
+      `
+      return
+    }
+    if (target._hp <= 0) {
+      mainEl.innerHTML += `
+        <p>${target.name}は死んでいます</p>
+        <p>攻撃魔法できません</p>
+      `
+      return
+    }
+    if (this._mp <= 0) {
+      mainEl.innerHTML += `
+        <p>MPが足りません</p>
+      `
+      return
+    }
+    this._mp -= 2;
+    target._hp -= 10;
+    mainEl.innerHTML += `
+      <p>${this._name}の攻撃魔法！</p>
+      <p>${target._name}に10のダメージ</p>
+      <p>${target._name}の_hp:${target._hp}</p>
+    `
   }
 }
 
